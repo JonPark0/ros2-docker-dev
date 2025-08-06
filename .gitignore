@@ -1,0 +1,388 @@
+# =============================================================================
+# ROS2 Docker 개발환경 .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 환경 설정 파일들
+# -----------------------------------------------------------------------------
+# 실제 환경 설정 파일 (예시 파일은 포함)
+.env
+.env.local
+.env.*.local
+
+# 플랫폼별 환경 설정
+.env.linux
+.env.windows
+.env.macos
+.env.robot1
+.env.robot2
+
+# -----------------------------------------------------------------------------
+# ROS2 관련 파일들
+# -----------------------------------------------------------------------------
+# ROS2 빌드 결과물
+workspace/build/
+workspace/install/
+workspace/log/
+
+# ROS2 패키지별 빌드 파일들
+**/build/
+**/install/
+**/log/
+
+# colcon 관련
+.colcon_install_layout
+.colcon_package_selection
+
+# rosdep 캐시
+.ros/
+
+# ROS 로그 파일들
+*.log
+*.bag
+*.db3
+
+# ROS2 parameters
+*.yaml.bak
+*.yml.bak
+
+# -----------------------------------------------------------------------------
+# Docker 관련 파일들
+# -----------------------------------------------------------------------------
+# Docker 볼륨 데이터
+.docker/
+docker-volumes/
+
+# Docker Compose override 파일들
+docker-compose.override.yml
+docker-compose.override.yaml
+docker-compose.*.yml
+docker-compose.*.yaml
+
+# Docker 빌드 캐시
+.dockerignore.local
+
+# -----------------------------------------------------------------------------
+# X11 및 디스플레이 관련
+# -----------------------------------------------------------------------------
+# X11 인증 파일
+.Xauth*
+.xauth*
+/tmp/.docker.xauth
+
+# -----------------------------------------------------------------------------
+# 개발 도구 관련
+# -----------------------------------------------------------------------------
+# IDE 설정 파일들
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Vim 임시 파일들
+.*.swp
+.*.swo
+.*.un~
+
+# Emacs 백업 파일들
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Claude Code 파일들
+CLAUDE.md
+.claude
+
+# -----------------------------------------------------------------------------
+# 운영체제별 파일들
+# -----------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# -----------------------------------------------------------------------------
+# 로그 및 임시 파일들
+# -----------------------------------------------------------------------------
+# 일반적인 로그 파일들
+logs/
+*.log
+log/
+*.out
+
+# 임시 파일들
+tmp/
+temp/
+*.tmp
+*.temp
+*.cache
+
+# 백업 파일들
+*.bak
+*.backup
+*.old
+*.orig
+
+# -----------------------------------------------------------------------------
+# Python 관련 (ROS2 Python 패키지용)
+# -----------------------------------------------------------------------------
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# -----------------------------------------------------------------------------
+# C++ 관련 (ROS2 C++ 패키지용)
+# -----------------------------------------------------------------------------
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# -----------------------------------------------------------------------------
+# Gazebo 관련
+# -----------------------------------------------------------------------------
+# Gazebo 로그 및 임시 파일들
+gazebo_models/.git/
+*.world~
+*.sdf~
+
+# Gazebo 미디어 파일들 (용량이 큰 경우)
+gazebo_models/**/*.dae
+gazebo_models/**/*.stl
+gazebo_models/**/*.mesh
+
+# -----------------------------------------------------------------------------
+# 기타 개발 관련
+# -----------------------------------------------------------------------------
+# SSH 키 파일들
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+
+# 인증서 파일들
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# 데이터베이스 파일들
+*.db
+*.sqlite
+*.sqlite3
+
+# 압축 파일들
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# 미디어 파일들 (용량이 큰 경우만)
+# *.mp4
+# *.avi
+# *.mov
+# *.png
+# *.jpg
+# *.jpeg
+
+# -----------------------------------------------------------------------------
+# 프로젝트별 커스텀 무시 파일들
+# -----------------------------------------------------------------------------
+# 로컬 스크립트들
+scripts/local/
+local/
+private/
+
+# 테스트 결과물들
+test_results/
+benchmark_results/
+
+# 문서 빌드 결과물들
+docs/_build/
+docs/build/
+site/
+
+# -----------------------------------------------------------------------------
+# 네트워크 및 보안 관련
+# -----------------------------------------------------------------------------
+# 네트워크 설정 파일들
+.netrc
+.htpasswd
+
+# 토큰 및 비밀번호 파일들
+.token
+.password
+secrets.txt
+credentials.json
+
+# =============================================================================
+# 주석: 필요에 따라 아래 섹션의 주석을 해제하여 사용하세요
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 대용량 파일들 (필요시 주석 해제)
+# -----------------------------------------------------------------------------
+# # 로그 백업 파일들
+# *.bag.gz
+# *.bag.bz2
+# 
+# # 대용량 데이터셋
+# datasets/
+# data/
+# 
+# # 모델 파일들
+# *.pth
+# *.pt
+# *.ckpt
+# *.h5
+# *.hdf5
+
+# -----------------------------------------------------------------------------
+# 특정 패키지들 (필요시 주석 해제)
+# -----------------------------------------------------------------------------
+# # 특정 ROS2 패키지 무시
+# workspace/src/third_party/
+# workspace/src/external/
+# 
+# # 자동 생성된 메시지/서비스 파일들
+# **/msg/__pycache__/
+# **/srv/__pycache__/
+# **/action/__pycache__/

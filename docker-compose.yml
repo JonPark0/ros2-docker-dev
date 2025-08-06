@@ -1,0 +1,177 @@
+services:
+  ros2-dev:
+    image: ${ROS2_IMAGE:-osrf/ros:humble-desktop-full}
+    container_name: ${CONTAINER_NAME:-ros2-dev-container}
+    hostname: ros2-dev
+    
+    # 네트워크 설정
+    network_mode: host
+    
+    # 권한 설정
+    privileged: ${PRIVILEGED:-false}
+    
+    # 환경변수 설정
+    environment:
+      # ROS2 환경변수
+      - ROS_DISTRO=${ROS_DISTRO:-humble}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+      
+      # 디스플레이 관련 환경변수 (Linux)
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+      
+      # 사용자 정보
+      - USER_ID=${USER_ID:-1000}
+      - GROUP_ID=${GROUP_ID:-1000}
+      - USER_NAME=${USER_NAME:-developer}
+      
+      # 개발 환경 설정
+      - TERM=xterm-256color
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+    
+    # 볼륨 마운트
+    volumes:
+      # 작업 디렉토리
+      - ${WORKSPACE_PATH:-./workspace}:/workspace:rw
+      - ${CONFIG_PATH:-./config}:/config:ro
+      
+      # 디스플레이 관련 볼륨 (Linux)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      
+      # 디바이스 접근 (필요한 경우)
+      - /dev:/dev:rw
+      
+      # 시간 동기화
+      - /etc/localtime:/etc/localtime:ro
+      
+      # SSH 키 (선택적)
+      - ${SSH_KEY_PATH:-~/.ssh}:/home/${USER_NAME:-developer}/.ssh:ro
+      
+      # Git 설정 (선택적)
+      - ${GIT_CONFIG_PATH:-~/.gitconfig}:/home/${USER_NAME:-developer}/.gitconfig:ro
+    
+    # 작업 디렉토리
+    working_dir: /workspace
+    
+    # 기본 명령어 (진입점 스크립트 또는 직접 소싱)
+    entrypoint: ["/bin/bash", "-c"]
+    command: 
+      - |
+        echo -e "\033[0;34m🤖 ROS2 개발환경을 초기화합니다...\033[0m"
+        
+        # Create .bashrc for root user with ROS2 environment
+        cat > /root/.bashrc << 'EOF'
+        # Source ROS2 environment
+        source /opt/ros/humble/setup.bash
+        
+        # Source workspace if it exists
+        if [ -f "/workspace/install/setup.bash" ]; then
+            source /workspace/install/setup.bash
+        fi
+        
+        # Useful aliases
+        alias cb='colcon build'
+        alias cbs='colcon build --symlink-install'
+        alias cbp='colcon build --packages-select'
+        alias cbt='colcon test'
+        alias ctr='colcon test-result'
+        alias ll='ls -alF'
+        alias la='ls -A'
+        alias l='ls -CF'
+        
+        # ROS2 command completion
+        eval "$(register-python-argcomplete3 ros2)" 2>/dev/null || true
+        eval "$(register-python-argcomplete3 colcon)" 2>/dev/null || true
+        
+        # Custom prompt
+        export PS1='\[\033[01;32m\][ROS2-$ROS_DISTRO]\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\]\$ '
+        
+        # Welcome message (only show on interactive shells)
+        if [[ $- == *i* ]]; then
+            echo -e "\033[0;32m✅ ROS2 환경이 준비되었습니다!\033[0m"
+            echo -e "📋 ROS_DISTRO: \033[0;32m$ROS_DISTRO\033[0m"
+            echo -e "🌐 ROS_DOMAIN_ID: \033[0;32m$ROS_DOMAIN_ID\033[0m"
+            echo -e "💻 RMW_IMPLEMENTATION: \033[0;32m$RMW_IMPLEMENTATION\033[0m"
+        fi
+        EOF
+        
+        echo -e "\033[0;32m📦 ROS2 환경을 로드합니다...\033[0m"
+        source /root/.bashrc
+        
+        # Keep container running
+        tail -f /dev/null
+    
+    # TTY 설정
+    tty: true
+    stdin_open: true
+    
+    # 재시작 정책
+    restart: ${RESTART_POLICY:-unless-stopped}
+    
+    # 디바이스 접근 (GPU 등)
+    devices:
+      - /dev/dri:/dev/dri  # GPU 접근
+    
+    # 포트 매핑 (필요한 경우)
+    ports:
+      - "${ROS2_MASTER_PORT:-11311}:11311"
+      - "${RVIZ_PORT:-8080}:8080"
+    
+    # 보안 설정
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    
+    # 메모리 및 CPU 제한 (선택적)
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT:-8G}
+          cpus: '${CPU_LIMIT:-4.0}'
+        reservations:
+          memory: ${MEMORY_RESERVATION:-2G}
+          cpus: '${CPU_RESERVATION:-1.0}'
+
+  # 추가 서비스 예시 (Gazebo 시뮬레이션)
+  gazebo:
+    image: ${GAZEBO_IMAGE:-osrf/ros:humble-desktop-full}
+    container_name: ${GAZEBO_CONTAINER_NAME:-gazebo-container}
+    depends_on:
+      - ros2-dev
+    
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+      - XAUTHORITY=${XAUTH:-/tmp/.docker.xauth}
+      - GAZEBO_MASTER_URI=http://ros2-dev:11345
+    
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTH:-/tmp/.docker.xauth}:/tmp/.docker.xauth:rw
+      - ${WORKSPACE_PATH:-./workspace}:/workspace:rw
+      - ${GAZEBO_MODELS_PATH:-./gazebo_models}:/home/developer/.gazebo/models:rw
+    
+    network_mode: host
+    privileged: ${PRIVILEGED:-false}
+    
+    command: ${GAZEBO_COMMAND:-gzserver}
+    
+    profiles:
+      - simulation
+
+# 네트워크 설정 (host 모드가 아닌 경우)
+networks:
+  ros2_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${NETWORK_SUBNET:-172.20.0.0/16}
+
+# 볼륨 설정
+volumes:
+  ros2_workspace:
+    driver: local
+  ros2_config:
+    driver: local
