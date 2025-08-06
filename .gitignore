@@ -25,6 +25,9 @@ workspace/build/
 workspace/install/
 workspace/log/
 
+# ROS2 설정 파일들
+config
+
 # ROS2 패키지별 빌드 파일들
 **/build/
 **/install/
@@ -94,6 +97,11 @@ docker-compose.*.yaml
 auto-save-list
 tramp
 .\#*
+
+# setup.sh로 인해 생성되는 shell 스크립트 파일들
+start.sh
+stop.sh
+connect.sh
 
 # Claude Code 파일들
 CLAUDE.md
